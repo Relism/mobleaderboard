@@ -25,5 +25,5 @@ Javadocs for the project can be found at [https://relism.github.io/mobleaderboar
 
 ## Development
 
-This plugin was developed in less than 5 and a half hours. Contributions and bug reports are welcome.
+This plugin was developed in less than 5 and a half hours.
 
