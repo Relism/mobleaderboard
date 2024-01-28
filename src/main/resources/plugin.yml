@@ -1,0 +1,14 @@
+name: Mobleaderboard
+version: '${project.version}'
+main: dev.relism.mobleaderboard.Mobleaderboard
+api-version: 1.20
+prefix: MLB
+authors: [ relism ]
+description: A simple mob leaderboard plugin
+
+commands:
+  test:
+    description: Opens a GUI with the kills leaderboard
+
+  atest:
+    description: Opens a GUI to perform specific operations regarding players and special mobs.

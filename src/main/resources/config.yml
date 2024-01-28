@@ -1,0 +1,2 @@
+mongouri: "<YOUR_MONGO_URI>"
+debug: true
