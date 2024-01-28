@@ -21,38 +21,54 @@ public final class Mobleaderboard extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        msg.log("&aPlugin has been enabled!");
         plugin = this;
         saveDefaultConfig();
         connectDatabase();
-        //listeners registering
+
+        // Registering listeners
+        msg.log("&eRegistering listeners...");
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         getServer().getPluginManager().registerEvents(new MobKillListener(), this);
         getServer().getPluginManager().registerEvents(new InventoryGUIListener(), this);
 
-        //commands registering
+        // Registering commands
+        msg.log("&eRegistering commands...");
         getCommand("test").setExecutor(new TestGUICommand(plugin));
         getCommand("atest").setExecutor(new AdminTestGUICommand(plugin));
+
+        msg.log("&aInitialization complete!");
     }
+
 
     @Override
     public void onDisable() {
         disconnectDatabase();
+        msg.log("&cPlugin has been disabled!");
     }
 
     /**
      * Connects to the database using the MongoDB URI provided in the config.yml.
      */
-    public void connectDatabase(){
-        msg.log("Establishing database connection...");
-        this.mongoWrapperInstance = new MongoWrapper(getConfig().getString("mongouri"));
+    public void connectDatabase() {
+        String mongoUri = getConfig().getString("mongouri");
+
+        if (mongoUri == null || !(mongoUri instanceof String)) {
+            msg.log("Invalid MongoDB URI in the config.yml. Please provide a valid string URI.");
+            return;
+        }
+
+        msg.log("&aEstablishing database connection...");
+        this.mongoWrapperInstance = new MongoWrapper(mongoUri);
     }
+
 
     /**
      * Disconnects from the database.
      */
     public void disconnectDatabase(){
-        msg.log("Closing database connection...");
-        mongoWrapperInstance.close().thenRun(() -> msg.log("Closed database connection."));
+        msg.log("&eClosing database connection...");
+        mongoWrapperInstance.close().thenRun(() -> msg.log("&aClosed database connection."));
     }
 
     public MongoWrapper getMongoWrapperInstance() { return mongoWrapperInstance; }

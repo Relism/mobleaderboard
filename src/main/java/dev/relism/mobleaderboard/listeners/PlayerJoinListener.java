@@ -77,9 +77,11 @@ public class PlayerJoinListener implements Listener {
         CompletableFuture<Object> pendingRewardFuture = playerStorage.getFieldValue("playerdata", "pendingRewardMaterial");
 
         pendingRewardFuture.thenAccept(pendingReward -> {
-            if (pendingReward != null) {
-                // Player has a pending reward
-                String pendingRewardMaterial = pendingReward.toString();  // Assuming the result is a String
+            // Check if the pending reward is not null and not equal to an empty string
+            if (pendingReward != null && !pendingReward.equals("")) {
+                String pendingRewardMaterial = pendingReward.toString();
+
+                // Convert the pending reward to a Material object
                 Material material = Material.getMaterial(pendingRewardMaterial);
 
                 if (material != null) {
@@ -87,9 +89,11 @@ public class PlayerJoinListener implements Listener {
                     player.getInventory().addItem(rewardItem);
                     msg.send(player, "&aYou received a pending reward: " + material.name());
 
-                    // Set pendingRewardMaterial to null
-                    playerStorage.setFieldValue("playerdata", "pendingRewardMaterial", 0);
+                    // Set pendingRewardMaterial to null or 0, depending on your use case
+                    playerStorage.setFieldValue("playerdata", "pendingRewardMaterial", "");
                 }
+            } else {
+                msg.send(player, "&bYou're awaiting no pending rewards");
             }
         });
     }

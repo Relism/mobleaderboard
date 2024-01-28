@@ -20,16 +20,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Executor class that handles displaying a leaderboard GUI
+ * containing information about the top players and their kills.
+ */
 public class TestGUICommand implements CommandExecutor {
     private final Mobleaderboard plugin;
     private MongoWrapper mwi;
     private final int rows = 3;
 
+    /**
+     * Constructs a new instance of TestGUICommand.
+     *
+     * @param plugin The main plugin instance.
+     */
     public TestGUICommand(Mobleaderboard plugin) {
         this.plugin = plugin;
         this.mwi = plugin.getMongoWrapperInstance();
     }
 
+    /**
+     * Executes the command, displaying a GUI with the top players and their kills.
+     *
+     * @param sender   The command sender.
+     * @param command  The command being executed.
+     * @param label    The alias of the command used.
+     * @param args     The arguments provided with the command.
+     * @return true if the command was executed successfully, false otherwise.
+     */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
@@ -47,6 +65,12 @@ public class TestGUICommand implements CommandExecutor {
                 return;
             }
 
+            // Basically checks if the #1 player has 0 or less kills (so everybody else is also on 0 kills)
+            if(topPlayers.get(0).getInteger("kills") <= 0){
+                msg.send(player, "&cEveryone is still on 0 kills, no leaderboard to be shown!");
+                return;
+            }
+
             Inventory inventory = createTopPlayersInventory(topPlayers);
             player.openInventory(inventory);
             player.setMetadata("OpenedTestGUI", new FixedMetadataValue(plugin, inventory));
@@ -55,6 +79,12 @@ public class TestGUICommand implements CommandExecutor {
         return true;
     }
 
+    /**
+     * Creates the GUI inventory displaying the top players and their kills.
+     *
+     * @param topPlayers The list of top players' data.
+     * @return The created GUI inventory.
+     */
     private Inventory createTopPlayersInventory(List<Document> topPlayers) {
         Inventory inventory = Bukkit.createInventory(null, 9 * rows, "Kills leaderboard");
 
@@ -70,6 +100,14 @@ public class TestGUICommand implements CommandExecutor {
         return inventory;
     }
 
+    /**
+     * Creates an ItemStack representing a player with their kills and position on the leaderboard.
+     *
+     * @param playerName The name of the player.
+     * @param playerKills The number of kills the player has.
+     * @param position    The position of the player on the leaderboard.
+     * @return The created player ItemStack.
+     */
     private ItemStack createPlayerItem(String playerName, int playerKills, int position) {
         // Create a player head ItemStack
         ItemStack playerHead = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
@@ -90,6 +128,12 @@ public class TestGUICommand implements CommandExecutor {
         return playerHead;
     }
 
+    /**
+     * Returns the inventory slot based on the position of a player on the leaderboard.
+     *
+     * @param position The position of the player on the leaderboard.
+     * @return The corresponding inventory slot.
+     */
     private int getInventorySlot(int position) {
         if (position == 0) {
             return 4;  // First place

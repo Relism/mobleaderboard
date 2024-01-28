@@ -86,12 +86,10 @@ public class InventoryGUIListener implements Listener {
         switch (clickedSlot) {
             case 2:
                 resetAllPlayerKills(player);
-                msg.send(player, "All player kills reset.");
                 break;
 
             case 4:
                 rewardTopPlayers(player);
-                msg.send(player, "Top players rewarded.");
                 break;
 
             case 6:
@@ -164,9 +162,9 @@ public class InventoryGUIListener implements Listener {
 
                 // Give rewards to top players
                 giveReward(player, rewardMaterial, executor);
-
-                msg.log("Rewarding " + player.getName() + " with a " + rewardMaterial.name());
             }
+
+            msg.send(executor, "Top players rewarded.");
 
             // Reset kills for others
             resetKillsForOthers(topPlayers, executor);
@@ -175,6 +173,10 @@ public class InventoryGUIListener implements Listener {
 
     /**
      * Gives a reward to a player, handling online and offline cases.
+     *
+     * If the player is offline, the reward material is stored as pending in the database.
+     * If the player is online but has a full inventory, the reward material is stored as pending in the database.
+     * If the player is online and has a free slot, the reward will be given immediately.
      *
      * @param targetPlayer The player to receive the reward
      * @param material     The material of the reward
@@ -191,7 +193,7 @@ public class InventoryGUIListener implements Listener {
             } else {
                 // Inventory is full, make the reward pending
                 storePendingReward(targetPlayer, material);
-                msg.send(targetPlayer, "&eYour inventory is full. The reward will be given when you have space.");
+                msg.send(targetPlayer, "&eYour inventory is full. Free up atleast one slot of space and rejoin the server.");
             }
         } else {
             // Player is offline, make the reward pending
@@ -201,9 +203,6 @@ public class InventoryGUIListener implements Listener {
 
     /**
      * Stores a pending reward for the specified player in the player data.
-     * If the player is offline, the reward material is stored as pending in the database.
-     * If the player is online but has a full inventory, the reward material is stored as pending in the database.
-     * If the player is online and has a free slot, the reward will be given immediately.
      *
      * @param player   The player to store the pending reward for
      * @param material The material of the pending reward

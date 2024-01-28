@@ -18,7 +18,7 @@ public class msg {
     public static final char COLOR_CHAR = '&';
 
     /**
-     * Sends a color-translated and placeholder-parsed message to a specific player.
+     * Sends a color-translated message to a specific player.
      *
      * @param p       The player to whom the message will be sent.
      * @param message The message to be sent.
